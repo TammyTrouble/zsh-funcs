@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+#Remove and deletes torrents after prompt
+
+remove-and-delete() {
+    if [ $# -gt 0 ];then
+	local -a torrents
+        for i in $@
+        do 
+	    torrents+=("`tri "$i" loc`/`tri "$i" name`")
+        done
+
+	for i in $torrents
+	do
+	    echo "$i"
+	done
+	
+	local total
+	total=`echo $torrents[(I)$torrents[-1]]`
+	echo "Remove and delete $total listed torrents? y/n: "
+	read -rs -k 1 ans
+
+	if [[ "${ans}" == "n" || "${ans}" == "N" ]]; then
+	    echo "Aborting."
+	    return 1
+	fi
+
+	for ((i = 1; i <= $#; i++))
+	do
+	    transmission-remote -t $@[$i] -r
+	    rm -rf "$torrents[$i]"
+	done
+    fi
+}

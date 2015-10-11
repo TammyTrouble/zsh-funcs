@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+set-torrents() {
+    if [[ -z $MEDIA_LOCATIONS ]]; then
+	MEDIA_LOCATIONS=("/down" "/shows" "/movies" "/media" "/video" )
+    fi
+
+    END_LOOP=`transmission-remote -l | head -n -1 | tail -n +2 | wc | sed 's/^ [ ]*//' | cut -d' ' -f1`
+    NOT_FOUND=()
+    UPDATED=0
+
+    for ((i=1; i<=$END_LOOP; i++))
+    do
+	FILE_NAME=`tri $i name`
+	FILE_NAME=`printf %q $FILE_NAME`
+	TEMP_DIR=""
+
+	for x in $MEDIA_LOCATIONS; do
+	    TEMP_DIR=`find $x/ -name "$FILE_NAME" -exec dirname {} \;`
+	    if [[ ! -z $TEMP_DIR ]]; then
+		break;
+	    fi
+	done;
+
+	if [[ ! -z $TEMP_DIR ]]; then;
+	    TEMP_LOC=`tri $i loc`
+	    if [[ "$TEMP_LOC" != "$TEMP_DIR" ]]; then
+		transmission-remote -t $i --find $TEMP_DIR > /dev/null 2>&1
+		transmission-remote -t $i -s > /dev/null 2>&1
+		((UPDATED=UPDATED+1))
+	    fi
+	fi
+
+	if [[ -z $TEMP_DIR ]]; then;
+	    NOT_FOUND+=("$i")
+	fi
+    done;
+    
+    echo "All done. $UPDATED torrents had locations updated."
+    echo $NOT_FOUND " were not found."
+}

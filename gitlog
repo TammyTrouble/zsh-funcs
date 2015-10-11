@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+# show X git logs or all
+gitlog() {
+    if (( $# == 0 )); then
+	git log --oneline
+    else
+	git log --oneline -n $1
+    fi
+}

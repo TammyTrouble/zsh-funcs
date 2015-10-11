@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+function tmux-attach() {
+    local TMUXTEXT
+    TMUXTEST=`tmux attach 2>&1`
+    if [[ "$TMUXTEST" == "no sessions" ]]; then
+	tmux 
+    fi
+}

@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+#Allows ls to double as less, also moves arguments to front for osx
+
+ls-less() {
+    local -a LSARGS
+    local -a LSDIRS
+    if [ `uname` = "Darwin" ]; then
+	LSARGS+=("-hbG")
+    else
+	LSARGS+=("--color=always -hb")
+    fi
+
+    for i in "$@"
+    do
+	if [ -f "$i" ]; then
+	    less "$i"
+	else
+	    if [ "$i[1]" = "-" ]; then
+		LSARGS+=("$i")
+	    else
+		LSDIRS+=("$i")
+	    fi
+	fi
+    done
+    
+    if [[ ! -z $LSDIRS || $# -eq 0 ]]; then
+	/bin/ls `echo $LSARGS` `echo $LSDIRS`
+    fi
+}

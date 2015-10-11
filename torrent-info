@@ -1,0 +1,48 @@
+#!/usr/bin/env zsh
+torrent-info() {
+    if [[ $# -eq 0 ]] then
+	echo "Usage: $0 #"
+    else
+	local TEMP_INFO
+	TEMP_INFO=`transmission-remote -t $1 -i`
+	case "$2" in
+	    name)
+		echo $TEMP_INFO | grep Name: | cut -d: -f 2- | cut -d' ' -f2-
+		;;
+
+	    loc)
+		echo $TEMP_INFO | grep Location: | cut -d: -f 2- | cut -d' ' -f2-
+		;;
+
+	    avail)
+		echo $TEMP_INFO | grep Availability: | cut -d: -f 2- | cut -d' ' -f2- | cut -d% -f1
+		;;
+	    state)
+		echo $TEMP_INFO | grep State: | cut -d: -f 2- | cut -d' ' -f2- | cut -d% -f1
+		;;
+	    have)
+		local HAVENONE
+		HAVENONE=`echo $TEMP_INFO | grep Have:`
+		if [[ $HAVENONE =~ 'None' ]]; then
+		    echo "false"
+		    return 0
+		fi
+		local HAVEALL
+		HAVEALL=`echo $TEMP_INFO | grep Availability: | cut -d: -f 2- | cut -d' ' -f2- | cut -d% -f1`
+		if [[ 100 -gt $HAVEALL ]]; then
+		    echo "false"
+		    return 0
+		fi
+		echo "true"
+		return 0
+		;;
+
+	    *)
+		echo $TEMP_INFO | grep Name:
+		echo $TEMP_INFO | grep State:
+		echo $TEMP_INFO | grep Location:
+		echo $TEMP_INFO | grep Have:
+		echo $TEMP_INFO | grep Availability:
+	esac
+    fi
+}

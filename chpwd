@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# print dir stack
+chpwd() {
+  print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# bring emacs to fg with Ctrl+Z
+foreground-emacs() {
+    fg %emacs
+}

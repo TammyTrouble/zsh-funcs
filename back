@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# jump to last directory in back
+back() {
+    cd -"$@"
+}

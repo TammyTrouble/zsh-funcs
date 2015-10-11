@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+remove-torrent() {
+    if [ $# -gt 0 ];then
+        for i in $@
+        do
+	    echo transmission-remote -t $i -r
+	    transmission-remote -t $i -r
+        done
+    fi
+}

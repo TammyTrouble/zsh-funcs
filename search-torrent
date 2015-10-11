@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+search-torrent() {
+    if (( $# == 0 )); then
+	echo "Usage $0 <search term>"
+	return 1
+    else
+	TORRENTS=`TRLC | grep -i $1`
+
+	if (( $# > 1 )); then
+	    for ((i = 2; i <= $#; i++))
+	    do
+		TORRENTS=`echo $TORRENTS | grep -i "$@[$i]"`
+	    done
+	fi
+	echo $TORRENTS
+    fi
+    unset TORRENTS
+}

@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+find-torrent() {
+    if (( $# == 2 )); then
+	local FINDDIR="$2"
+    fi
+    if [[ -d $FINDDIR ]]; then
+	echo transmission-remote -t "$1" --find $FINDDIR
+	transmission-remote -t "$1" --find $FINDDIR
+	transmission-remote -t "$1" -s > /dev/null 2>&1
+    else
+	echo "location not set; usage:"
+	echo "$0 ### /location/path"
+    fi
+}
